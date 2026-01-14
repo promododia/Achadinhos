@@ -87,19 +87,26 @@
             appId: "1:626481618160:web:6971d5560c36a47ccd3635"
         };
         firebase.initializeApp(firebaseConfig);
+
         const auth = firebase.auth();
         const db = firebase.firestore();
-        const MEU_UID = "PwnZYwD4DacE2dcHwBBN3Iuvngf1";
+        const MEU_UID = "PwnZYwD4DacE2dcHwBBN3Iuvngf1"; // Seu UID único
+
         let produtosLocal = [];
         let catAtual = "Tudo";
 
-        // Função de Login do Google
+        // Função de Login/Logout
         function gerenciarLogin() {
             if (!auth.currentUser) {
                 const provider = new firebase.auth.GoogleAuthProvider();
-                auth.signInWithRedirect(provider);
+                auth.signInWithPopup(provider).catch(error => {
+                    console.error("Erro no login:", error);
+                    alert("Erro ao abrir login. Verifique se o domínio está autorizado no Firebase.");
+                });
             } else {
-                if(confirm("Deseja sair da conta?")) auth.signOut().then(() => location.reload());
+                if(confirm("Deseja sair da conta?")) {
+                    auth.signOut().then(() => location.reload());
+                }
             }
         }
 
@@ -107,9 +114,13 @@
         auth.onAuthStateChanged(user => {
             const btnAdd = document.getElementById('btn-adicionar');
             const imgUser = document.getElementById('avatar-img');
+            
             if (user) {
                 imgUser.src = user.photoURL;
-                if (user.uid === MEU_UID) btnAdd.style.display = 'flex';
+                // Só mostra o botão de adicionar (+) se o UID for o seu
+                if (user.uid === MEU_UID) {
+                    btnAdd.style.display = 'flex';
+                }
             } else {
                 imgUser.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
                 btnAdd.style.display = 'none';
@@ -119,27 +130,61 @@
         function abrirModal() { document.getElementById('modal-form').style.display = 'flex'; }
         function fecharModal() { document.getElementById('modal-form').style.display = 'none'; }
 
+        // Função para Salvar Produto (Afiliado)
         function salvarPost() {
+            if (!auth.currentUser || auth.currentUser.uid !== MEU_UID) {
+                return alert("Apenas o dono pode postar!");
+            }
+
             const titulo = document.getElementById('p-titulo').value;
-            const img = document.getElementById('p-imagem').value;
+            const imagem = document.getElementById('p-imagem').value;
             const link = document.getElementById('p-link').value;
-            const cat = document.getElementById('p-categoria').value;
-            if(!titulo || !img || !link) return alert("Preencha tudo!");
-            db.collection("produtos").add({ titulo, imagem: img, link, categoria: cat, data: new Date() })
-            .then(() => { alert("Postado!"); fecharModal(); });
+            const categoria = document.getElementById('p-categoria').value;
+
+            if(!titulo || !imagem || !link || categoria === "Tudo") {
+                return alert("Preencha todos os campos corretamente!");
+            }
+
+            db.collection("produtos").add({
+                titulo,
+                imagem,
+                link,
+                categoria,
+                data: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                alert("Achadinho publicado com sucesso!");
+                document.getElementById('p-titulo').value = "";
+                document.getElementById('p-imagem').value = "";
+                document.getElementById('p-link').value = "";
+                fecharModal();
+            })
+            .catch(error => alert("Erro ao salvar: " + error));
         }
 
+        // Carregar Produtos em Tempo Real
         db.collection("produtos").orderBy("data", "desc").onSnapshot(snap => {
             produtosLocal = [];
-            snap.forEach(doc => produtosLocal.push(doc.data()));
-            renderizar(produtosLocal);
+            snap.forEach(doc => {
+                const data = doc.data();
+                data.id = doc.id;
+                produtosLocal.push(data);
+            });
+            filtrarTudo(); // Renderiza aplicando filtros se houver
         });
 
         function renderizar(lista) {
             const div = document.getElementById('lista-produtos');
             div.innerHTML = "";
             lista.forEach(p => {
-                div.innerHTML += `<div class="card"><img src="${p.imagem}"><div class="card-body"><span class="card-title">${p.titulo}</span><a href="${p.link}" target="_blank" class="btn-link">Ver Oferta</a></div></div>`;
+                div.innerHTML += `
+                    <div class="card">
+                        <img src="${p.imagem}" onerror="this.src='https://via.placeholder.com/300?text=Imagem+Indisponível'">
+                        <div class="card-body">
+                            <span class="card-title">${p.titulo}</span>
+                            <a href="${p.link}" target="_blank" class="btn-link">Ver Oferta</a>
+                        </div>
+                    </div>`;
             });
         }
 
