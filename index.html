@@ -3,81 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste Achadinho no Precinho</title>
+    <title>Painel Achadinho no Precinho</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f4f4f4; }
-        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-        button { background-color: #4285F4; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        button:hover { background-color: #357ae8; }
-        #user-info { margin-top: 20px; display: none; }
-        img { border-radius: 50%; width: 50px; margin-bottom: 10px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 500px; width: 100%; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1 { color: #1a73e8; text-align: center; font-size: 24px; }
+        .user-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .user-header img { border-radius: 50%; width: 40px; }
+        
+        form { display: flex; flex-direction: column; gap: 10px; }
+        input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+        input:focus { border-color: #1a73e8; }
+        
+        button { cursor: pointer; border: none; border-radius: 8px; padding: 12px; font-weight: bold; transition: 0.3s; }
+        .btn-salvar { background-color: #34a853; color: white; }
+        .btn-salvar:hover { background-color: #2d8e47; }
+        .btn-login { background-color: #4285F4; color: white; width: 100%; }
+        .btn-logout { background-color: #ff4d4d; color: white; padding: 5px 10px; font-size: 12px; }
+
+        #lista-achadinhos { width: 100%; }
+        .item-achadinho { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid #34a853; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .item-achadinho strong { font-size: 18px; display: block; margin-bottom: 5px; }
+        .preco { color: #2d8e47; font-weight: bold; font-size: 16px; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>Achadinho no Precinho</h1>
-        <p>Clique abaixo para testar o login:</p>
-        <button id="btnLogin">Entrar com Google</button>
+    <div class="container">
+        <h1>💎 Achadinho no Precinho</h1>
 
-        <div id="user-info">
-            <img id="userPhoto" src="" alt="Foto">
-            <p>Olá, <span id="userName"></span>!</p>
-            <button id="btnLogout" style="background-color: #ea4335;">Sair</button>
+        <div id="area-login">
+            <button id="btnLogin" class="btn-login">Entrar para Postar (Admin)</button>
         </div>
+
+        <div id="painel-postagem" style="display: none;">
+            <div class="user-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img id="userPhoto" src="" alt="Foto">
+                    <span id="userName" style="font-weight: bold;"></span>
+                </div>
+                <button id="btnLogout" class="btn-logout">Sair</button>
+            </div>
+
+            <form id="form-achadinho">
+                <input type="text" id="nomeProduto" placeholder="Nome do Produto" required>
+                <input type="text" id="precoProduto" placeholder="Preço (Ex: R$ 49,90)" required>
+                <input type="url" id="linkProduto" placeholder="Link da Oferta (https://...)" required>
+                <button type="submit" class="btn-salvar">Postar Achadinho</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <h3>🔥 Ofertas do Dia</h3>
+        <div id="lista-achadinhos">Carregando ofertas...</div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // Sua configuração oficial
         const firebaseConfig = {
-          apiKey: "AIzaSyCedznZfgv43RRWJmyvA105xFrRhpNTDEw",
-          authDomain: "achadinho-no-precinho.firebaseapp.com",
-          databaseURL: "https://achadinho-no-precinho-default-rtdb.firebaseio.com",
-          projectId: "achadinho-no-precinho",
-          storageBucket: "achadinho-no-precinho.firebasestorage.app",
-          messagingSenderId: "626481618160",
-          appId: "1:626481618160:web:6971d5560c36a47ccd3635",
-          measurementId: "G-41W7CFE5JV"
+            apiKey: "AIzaSyCedznZfgv43RRWJmyvA105xFrRhpNTDEw",
+            authDomain: "achadinho-no-precinho.firebaseapp.com",
+            databaseURL: "https://achadinho-no-precinho-default-rtdb.firebaseio.com",
+            projectId: "achadinho-no-precinho",
+            storageBucket: "achadinho-no-precinho.firebasestorage.app",
+            messagingSenderId: "626481618160",
+            appId: "1:626481618160:web:6971d5560c36a47ccd3635"
         };
 
-        // Inicializa o Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getDatabase(app);
         const provider = new GoogleAuthProvider();
 
-        // Elementos da tela
-        const btnLogin = document.getElementById('btnLogin');
-        const btnLogout = document.getElementById('btnLogout');
-        const userInfo = document.getElementById('user-info');
-        const userName = document.getElementById('userName');
-        const userPhoto = document.getElementById('userPhoto');
+        const EMAIL_ADMIN = "wallyazevedo18@gmail.com";
 
-        // Função para Logar
-        btnLogin.onclick = async () => {
+        // Elementos
+        const painel = document.getElementById('painel-postagem');
+        const areaLogin = document.getElementById('area-login');
+        const btnLogin = document.getElementById('btnLogin');
+        const form = document.getElementById('form-achadinho');
+        const lista = document.getElementById('lista-achadinhos');
+
+        btnLogin.onclick = () => signInWithPopup(auth, provider);
+        document.getElementById('btnLogout').onclick = () => signOut(auth);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                areaLogin.style.display = 'none';
+                if (user.email === EMAIL_ADMIN) {
+                    painel.style.display = 'block';
+                    document.getElementById('userName').innerText = user.displayName;
+                    document.getElementById('userPhoto').src = user.photoURL;
+                } else {
+                    alert("Acesso negado. Apenas Wally pode postar.");
+                    signOut(auth);
+                }
+            } else {
+                areaLogin.style.display = 'block';
+                painel.style.display = 'none';
+            }
+        });
+
+        // SALVAR NO BANCO
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const novoAchadinho = {
+                nome: document.getElementById('nomeProduto').value,
+                preco: document.getElementById('precoProduto').value,
+                link: document.getElementById('linkProduto').value,
+                data: new Date().toLocaleString()
+            };
+
             try {
-                await signInWithPopup(auth, provider);
+                await push(ref(db, 'achadinhos'), novoAchadinho);
+                form.reset();
+                alert("Postado com sucesso!");
             } catch (error) {
-                alert("Erro ao logar: " + error.message);
+                alert("Erro de permissão no Firebase.");
             }
         };
 
-        // Função para Sair
-        btnLogout.onclick = () => signOut(auth);
-
-        // Observador de estado (Verifica se está logado ou não)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                btnLogin.style.display = 'none';
-                userInfo.style.display = 'block';
-                userName.innerText = user.displayName;
-                userPhoto.src = user.photoURL;
-            } else {
-                btnLogin.style.display = 'block';
-                userInfo.style.display = 'none';
-            }
+        // LISTAR NO SITE
+        onValue(ref(db, 'achadinhos'), (snapshot) => {
+            lista.innerHTML = "";
+            snapshot.forEach((childSnapshot) => {
+                const item = childSnapshot.val();
+                lista.innerHTML += `
+                    <div class="item-achadinho">
+                        <strong>${item.nome}</strong>
+                        <span class="preco">${item.preco}</span><br><br>
+                        <a href="${item.link}" target="_blank" style="text-decoration:none; color:white; background:#1a73e8; padding:5px 10px; border-radius:5px; font-size:14px;">Ir para a Loja</a>
+                    </div>
+                `;
+            });
+            if (lista.innerHTML === "") lista.innerHTML = "Aguardando promoções...";
         });
     </script>
 </body>
