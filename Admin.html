@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | Achadinho no Precinho</title>
+    <style>
+        :root {
+            --primaria: #0066ff;
+            --fundo: #f0f2f5;
+            --branco: #ffffff;
+            --texto: #333;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--fundo); 
+            color: var(--texto); 
+            display: flex; 
+            justify-content: center; 
+            padding: 40px 20px; 
+            margin: 0;
+        }
+
+        .caixa-admin { 
+            width: 100%; 
+            max-width: 400px; 
+            background: var(--branco); 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            text-align: center;
+        }
+
+        h2 { margin-bottom: 20px; color: var(--primaria); font-size: 1.4rem; }
+
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 10px 0; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 16px;
+        }
+
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 8px; 
+            border: none; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+        .btn-login { background: var(--primaria); color: white; }
+        .btn-postar { background: #28a745; color: white; margin-top: 10px; }
+        .btn-postar:hover { background: #218838; }
+
+        #area-postagem { display: none; margin-top: 20px; text-align: left; }
+        
+        .header-usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header-usuario img { width: 40px; border-radius: 50%; }
+        .logout { background: none; color: #ff4d4d; font-size: 12px; padding: 0; width: auto; text-decoration: underline; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="caixa-admin">
+        <h2 id="titulo">Acesso Restrito</h2>
+        
+        <button id="btnLogin" class="btn-login">Entrar como Administrador</button>
+
+        <div id="area-postagem">
+            <div class="header-usuario">
+                <img id="fotoUsuario" src="" alt="">
+                <span id="nomeUsuario" style="font-weight: bold;"></span>
+            </div>
+
+            <label>Nome do Produto:</label>
+            <input type="text" id="nome" placeholder="Ex: Smart TV 55 Polegadas">
+            
+            <label>Preço:</label>
+            <input type="text" id="preco" placeholder="Ex: R$ 2.499,00">
+            
+            <label>Link da Loja:</label>
+            <input type="url" id="link" placeholder="https://loja.com/produto">
+            
+            <label>Link da Imagem (URL):</label>
+            <input type="url" id="img" placeholder="Cole o link da foto aqui">
+            
+            <button id="btnPublicar" class="btn-postar">PUBLICAR AGORA</button>
+            <button class="logout" onclick="location.reload()">Sair do sistema</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCedznZfgv43RRWJmyvA105xFrRhpNTDEw", 
+            authDomain: "achadinho-no-precinho.firebaseapp.com", 
+            databaseURL: "https://achadinho-no-precinho-default-rtdb.firebaseio.com", 
+            projectId: "achadinho-no-precinho", 
+            storageBucket: "achadinho-no-precinho.firebasestorage.app", 
+            messagingSenderId: "626481618160", 
+            appId: "1:626481618160:web:6971d5560c36a47ccd3635" 
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const provider = new GoogleAuthProvider();
+
+        const btnLogin = document.getElementById('btnLogin');
+        const areaPostagem = document.getElementById('area-postagem');
+        const EMAIL_AUTORIZADO = "wallyazevedo18@gmail.com";
+
+        // Função de Login
+        btnLogin.onclick = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                alert("Erro ao fazer login: " + error.message);
+            }
+        };
+
+        // Verifica quem está logado
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (user.email === EMAIL_AUTORIZADO) {
+                    areaPostagem.style.display = 'block';
+                    btnLogin.style.display = 'none';
+                    document.getElementById('titulo').innerText = "Painel da Wally";
+                    document.getElementById('nomeUsuario').innerText = user.displayName;
+                    document.getElementById('fotoUsuario').src = user.photoURL;
+                } else {
+                    alert("Acesso negado! Este painel é privado.");
+                    signOut(auth);
+                }
+            } else {
+                areaPostagem.style.display = 'none';
+                btnLogin.style.display = 'block';
+                document.getElementById('titulo').innerText = "Acesso Restrito";
+            }
+        });
+
+        // Função para Publicar no Firebase
+        document.getElementById('btnPublicar').onclick = async () => {
+            const data = {
+                nome: document.getElementById('nome').value,
+                preco: document.getElementById('preco').value,
+                link: document.getElementById('link').value,
+                img: document.getElementById('img').value,
+                dataCriacao: Date.now()
+            };
+
+            if(!data.nome || !data.preco || !data.link) {
+                alert("Por favor, preencha os campos obrigatórios (Nome, Preço e Link).");
+                return;
+            }
+
+            try {
+                await push(ref(db, 'achadinhos'), data);
+                alert("🎉 Oferta publicada com sucesso!");
+                // Limpa os campos após postar
+                document.getElementById('nome').value = "";
+                document.getElementById('preco').value = "";
+                document.getElementById('link').value = "";
+                document.getElementById('img').value = "";
+            } catch (error) {
+                alert("Erro ao publicar: Verifique as regras do seu Firebase.");
+            }
+        };
+    </script>
+</body>
+</html>
