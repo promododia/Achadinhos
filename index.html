@@ -3,338 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Achadinho Neon | Ofertas Futuristas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+    <title>Achadinho no Precinho | Ofertas Selecionadas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-pink: #FF007F;
-            --neon-blue: #00FFFF;
-            --neon-green: #00FF00;
-            --dark-bg: #1a1a2e;
-            --dark-secondary: #0f0f1d;
-            --text-light: #e0e0e0;
-            --text-dark: #0f0f1d;
+            --primary: #0066ff;
+            --text: #1a1a1a;
+            --bg: #f5f7fa;
+            --card: #ffffff;
         }
 
-        body { 
-            font-family: 'Space Mono', monospace; 
-            background-color: var(--dark-bg); 
-            color: var(--text-light);
-            margin: 0; 
-            padding-bottom: 50px;
-            text-align: center;
-        }
-
-        /* Efeito de brilho neon */
-        .neon-glow {
-            text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue), 0 0 15px var(--neon-blue);
-            animation: flicker 1.5s infinite alternate;
-        }
-
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue), 0 0 15px var(--neon-blue);
-            }
-            20%, 24%, 55% {       
-                text-shadow: none;
-            }
-        }
-
-        /* Header Estilizado */
-        header {
-            background: var(--dark-secondary);
-            color: white;
-            padding: 30px 20px;
-            border-bottom: 2px solid var(--neon-pink);
-            box-shadow: 0 0 15px rgba(255,0,127,0.5); /* Sombra neon */
-            margin-bottom: 25px;
-        }
-
-        header h1 { margin: 0; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--neon-blue); }
-        header p { opacity: 0.8; font-size: 0.9rem; margin-top: 10px; color: var(--text-light); }
-
-        .container { max-width: 600px; margin: 0 auto; padding: 0 15px; }
-
-        /* Painel Admin (Card Principal) */
-        #painel-admin, .card-oferta-wrapper {
-            background: var(--dark-secondary);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 0 10px rgba(0,255,255,0.3); /* Borda brilhante */
-            margin-bottom: 30px;
-            border: 1px solid var(--neon-blue);
-        }
-        #painel-admin { display: none; } /* Escondido por padrão */
-
-        .admin-header { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            margin-bottom: 20px;
-            border-bottom: 1px dashed var(--neon-pink);
-            padding-bottom: 10px;
-        }
-        .admin-header img { width: 35px; border-radius: 50%; border: 2px solid var(--neon-green); }
-        .admin-header span { color: var(--neon-green); font-weight: bold; }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid var(--neon-blue);
-            border-radius: 8px;
-            background-color: #2b2b40;
-            color: var(--text-light);
-            box-sizing: border-box;
-            font-size: 16px;
-            outline: none;
-        }
-        input::placeholder { color: rgba(255,255,255,0.4); }
-        input:focus { box-shadow: 0 0 8px var(--neon-blue); }
-        
-        .btn-action {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            margin-top: 10px;
-        }
-
-        .btn-postar {
-            background: var(--neon-pink);
-            color: var(--text-dark);
-            box-shadow: 0 0 10px var(--neon-pink);
-        }
-        .btn-postar:hover { background: #ff3399; box-shadow: 0 0 15px var(--neon-pink); }
-        .btn-postar:active { transform: translateY(2px); }
-
-        .btn-logout {
-            background: none;
-            color: var(--neon-blue);
-            border: 1px solid var(--neon-blue);
-            font-size: 12px;
-            margin-top: 15px;
-            width: auto;
-            align-self: flex-end; /* Alinha o botão de sair à direita */
-            padding: 8px 15px;
-        }
-        .btn-logout:hover { background: rgba(0,255,255,0.1); }
-
-        /* Vitrine de Ofertas */
-        .section-title { 
-            font-weight: 700; 
-            font-size: 1.5rem;
-            margin-bottom: 25px; 
-            color: var(--neon-green);
-            text-shadow: 0 0 5px var(--neon-green);
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            text-transform: uppercase;
         }
 
-        .card-oferta {
-            background: #2b2b40;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 8px rgba(0,255,255,0.2);
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(0,255,255,0.1);
+        header {
+            width: 100%;
+            background: var(--card);
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid #e1e8ef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .card-oferta .tag {
-            background: var(--neon-pink);
-            color: var(--text-dark);
-            font-size: 0.7rem;
-            font-weight: bold;
-            padding: 4px 12px;
-            border-radius: 50px;
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            box-shadow: 0 0 5px var(--neon-pink);
-        }
-
-        .card-oferta h3 { margin: 0 0 10px 0; font-size: 1.3rem; padding-right: 70px; color: var(--text-light); }
-        .card-oferta .price { 
-            color: var(--neon-green); 
-            font-size: 1.8rem; 
+        header h1 { 
+            margin: 0; 
+            font-size: 1.5rem; 
             font-weight: 700; 
-            margin-bottom: 15px; 
-            display: block; 
-            text-shadow: 0 0 8px var(--neon-green);
+            color: var(--primary);
+            letter-spacing: -0.5px;
         }
 
-        .btn-loja {
+        .container {
+            width: 90%;
+            max-width: 450px;
+            margin-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #edf2f7;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            background: #fff;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .card-content { padding: 16px; }
+
+        .card-title { font-size: 1rem; font-weight: 600; margin: 0; color: #4a5568; }
+
+        .card-price {
+            display: block;
+            font-size: 1.4rem;
+            color: var(--text);
+            font-weight: 700;
+            margin: 10px 0 15px 0;
+        }
+
+        .btn-buy {
             display: block;
             text-align: center;
-            background: var(--neon-blue);
-            color: var(--text-dark);
+            background: var(--primary);
+            color: #fff;
             text-decoration: none;
             padding: 12px;
             border-radius: 8px;
-            font-weight: 700;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 0 10px var(--neon-blue);
+            font-weight: 600;
+            transition: background 0.2s;
         }
 
-        .btn-loja:hover { background: #33ffff; box-shadow: 0 0 15px var(--neon-blue); transform: translateY(-2px); }
+        .btn-buy:hover { background: #0052cc; }
 
-        /* Login Button */
-        #area-login { 
-            text-align: center; 
-            margin-bottom: 30px; 
-            background: var(--dark-secondary);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 0 10px rgba(0,255,255,0.3);
-            border: 1px solid var(--neon-blue);
-        }
-
-        .btn-google { 
-            background: var(--neon-green);
-            color: var(--text-dark);
-            border: none;
-            padding: 12px 25px; 
-            border-radius: 50px; 
-            cursor: pointer; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 10px;
-            font-weight: 700; 
-            box-shadow: 0 0 15px var(--neon-green);
-            transition: all 0.2s ease-in-out;
-            text-transform: uppercase;
-        }
-        .btn-google:hover { background: #33ff33; box-shadow: 0 0 20px var(--neon-green); }
-        .btn-google img { filter: invert(1); /* Inverte a cor do logo do Google para se adaptar ao fundo escuro */ }
-
-        #lista-achadinhos p { opacity: 0.6; font-style: italic; }
+        .empty-msg { text-align: center; opacity: 0.5; margin-top: 50px; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 class="neon-glow">Achadinho Neon</h1>
-        <p>As ofertas mais iradas do ciberespaço, selecionadas por Wally!</p>
+        <h1>ACHADINHO NO PRECINHO</h1>
     </header>
 
-    <div class="container">
-        <div id="area-login">
-            <button id="btnLogin" class="btn-google">
-                <i class="fab fa-google" style="color: var(--text-dark);"></i> Acesso de Admin
-            </button>
-        </div>
-
-        <section id="painel-admin">
-            <div class="admin-header">
-                <span id="userName">Painel de Postagem</span>
-                <img id="userPhoto" src="">
-            </div>
-            <form id="form-achadinho">
-                <input type="text" id="nomeProduto" placeholder="Nome do Achadinho (Ex: Fone Gamer HyperX)" required>
-                <input type="text" id="precoProduto" placeholder="Preço Top (Ex: R$ 199,99)" required>
-                <input type="url" id="linkProduto" placeholder="Link da Loja (https://...)" required>
-                <button type="submit" class="btn-postar btn-action">Publicar Oferta Cyber</button>
-            </form>
-            <button id="btnLogout" class="btn-action btn-logout">Sair do Painel</button>
-        </section>
-
-        <div class="section-title"><i class="fas fa-fire-alt" style="color:var(--neon-green);"></i> Ofertas Hot 🔥</div>
-        <div id="lista-achadinhos">
-            <p>Carregando ofertas futuristas...</p>
-        </div>
+    <div class="container" id="feed">
+        <p class="empty-msg">Buscando as melhores ofertas...</p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, push, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // Sua Configuração Real
-        const firebaseConfig = {
-            apiKey: "AIzaSyCedznZfgv43RRWJmyvA105xFrRhpNTDEw",
-            authDomain: "achadinho-no-precinho.firebaseapp.com",
-            databaseURL: "https://achadinho-no-precinho-default-rtdb.firebaseio.com",
-            projectId: "achadinho-no-precinho",
-            storageBucket: "achadinho-no-precinho.firebasestorage.app",
-            messagingSenderId: "626481618160",
-            appId: "1:626481618160:web:6971d5560c36a47ccd3635"
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCedznZfgv43RRWJmyvA105xFrRhpNTDEw", 
+            authDomain: "achadinho-no-precinho.firebaseapp.com", 
+            databaseURL: "https://achadinho-no-precinho-default-rtdb.firebaseio.com", 
+            projectId: "achadinho-no-precinho", 
+            storageBucket: "achadinho-no-precinho.firebasestorage.app", 
+            messagingSenderId: "626481618160", 
+            appId: "1:626481618160:web:6971d5560c36a47ccd3635" 
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getDatabase(app);
-        const provider = new GoogleAuthProvider();
 
-        const EMAIL_ADMIN = "wallyazevedo18@gmail.com";
-
-        const btnLogin = document.getElementById('btnLogin');
-        const painelAdmin = document.getElementById('painel-admin');
-        const listaAchadinhos = document.getElementById('lista-achadinhos');
-
-        // Logica de Login
-        btnLogin.onclick = () => signInWithPopup(auth, provider);
-        document.getElementById('btnLogout').onclick = () => signOut(auth);
-
-        onAuthStateChanged(auth, (user) => {
-            if (user && user.email === EMAIL_ADMIN) {
-                painelAdmin.style.display = 'block';
-                document.getElementById('area-login').style.display = 'none';
-                document.getElementById('userPhoto').src = user.photoURL;
-                document.getElementById('userName').innerText = "Admin: " + user.displayName.split(' ')[0];
-            } else {
-                painelAdmin.style.display = 'none';
-                document.getElementById('area-login').style.display = 'block';
-                if (user) signOut(auth); // Desloga se não for admin
-            }
-        });
-
-        // Postar Oferta
-        document.getElementById('form-achadinho').onsubmit = async (e) => {
-            e.preventDefault();
-            const payload = {
-                nome: document.getElementById('nomeProduto').value,
-                preco: document.getElementById('precoProduto').value,
-                link: document.getElementById('linkProduto').value,
-                timestamp: Date.now()
-            };
-            try {
-                await push(ref(db, 'achadinhos'), payload);
-                document.getElementById('form-achadinho').reset();
-                alert("Sucesso! Sua oferta já está no ciberespaço.");
-            } catch (err) {
-                alert("Erro ao postar. Verifique as regras do Firebase.");
-            }
-        };
-
-        // Mostrar Ofertas (Tempo Real)
-        const consulta = query(ref(db, 'achadinhos'), limitToLast(50)); // Limita a 50 ofertas para não sobrecarregar
-        onValue(consulta, (snapshot) => {
-            listaAchadinhos.innerHTML = "";
+        onValue(query(ref(db, 'achadinhos'), limitToLast(30)), (snapshot) => {
+            const feed = document.getElementById('feed');
+            feed.innerHTML = "";
             const items = [];
-            snapshot.forEach(child => { items.unshift(child.val()); }); // Inverte para os mais novos aparecerem em cima
-            
+            snapshot.forEach(child => { items.unshift(child.val()); });
+
+            if (items.length === 0) {
+                feed.innerHTML = '<p class="empty-msg">Nenhuma oferta postada ainda.</p>';
+                return;
+            }
+
             items.forEach(item => {
-                listaAchadinhos.innerHTML += `
-                    <div class="card-oferta">
-                        <span class="tag">OFERTA NEON</span>
-                        <h3>${item.nome}</h3>
-                        <span class="price">${item.preco}</span>
-                        <a href="${item.link}" target="_blank" class="btn-loja">RESGATAR CYBER-OFERTA <i class="fas fa-arrow-right"></i></a>
+                feed.innerHTML += `
+                    <div class="card">
+                        ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
+                        <div class="card-content">
+                            <h3 class="card-title">${item.nome}</h3>
+                            <span class="card-price">${item.preco}</span>
+                            <a href="${item.link}" target="_blank" class="btn-buy">Ver Promoção</a>
+                        </div>
                     </div>
                 `;
             });
-            if(items.length === 0) listaAchadinhos.innerHTML = "<p style='text-align:center; opacity:0.6;'>Aguardando ofertas futuristas...</p>";
         });
     </script>
 </body>
