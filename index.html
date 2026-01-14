@@ -3,67 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Achadinho no Precinho</title>
+    <title>Achadinho Neon | Ofertas Futuristas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { max-width: 500px; width: 100%; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        h1 { color: #1a73e8; text-align: center; font-size: 24px; }
-        .user-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-        .user-header img { border-radius: 50%; width: 40px; }
-        
-        form { display: flex; flex-direction: column; gap: 10px; }
-        input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
-        input:focus { border-color: #1a73e8; }
-        
-        button { cursor: pointer; border: none; border-radius: 8px; padding: 12px; font-weight: bold; transition: 0.3s; }
-        .btn-salvar { background-color: #34a853; color: white; }
-        .btn-salvar:hover { background-color: #2d8e47; }
-        .btn-login { background-color: #4285F4; color: white; width: 100%; }
-        .btn-logout { background-color: #ff4d4d; color: white; padding: 5px 10px; font-size: 12px; }
+        :root {
+            --neon-pink: #FF007F;
+            --neon-blue: #00FFFF;
+            --neon-green: #00FF00;
+            --dark-bg: #1a1a2e;
+            --dark-secondary: #0f0f1d;
+            --text-light: #e0e0e0;
+            --text-dark: #0f0f1d;
+        }
 
-        #lista-achadinhos { width: 100%; }
-        .item-achadinho { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid #34a853; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .item-achadinho strong { font-size: 18px; display: block; margin-bottom: 5px; }
-        .preco { color: #2d8e47; font-weight: bold; font-size: 16px; }
+        body { 
+            font-family: 'Space Mono', monospace; 
+            background-color: var(--dark-bg); 
+            color: var(--text-light);
+            margin: 0; 
+            padding-bottom: 50px;
+            text-align: center;
+        }
+
+        /* Efeito de brilho neon */
+        .neon-glow {
+            text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue), 0 0 15px var(--neon-blue);
+            animation: flicker 1.5s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue), 0 0 15px var(--neon-blue);
+            }
+            20%, 24%, 55% {       
+                text-shadow: none;
+            }
+        }
+
+        /* Header Estilizado */
+        header {
+            background: var(--dark-secondary);
+            color: white;
+            padding: 30px 20px;
+            border-bottom: 2px solid var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255,0,127,0.5); /* Sombra neon */
+            margin-bottom: 25px;
+        }
+
+        header h1 { margin: 0; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--neon-blue); }
+        header p { opacity: 0.8; font-size: 0.9rem; margin-top: 10px; color: var(--text-light); }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 0 15px; }
+
+        /* Painel Admin (Card Principal) */
+        #painel-admin, .card-oferta-wrapper {
+            background: var(--dark-secondary);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,255,255,0.3); /* Borda brilhante */
+            margin-bottom: 30px;
+            border: 1px solid var(--neon-blue);
+        }
+        #painel-admin { display: none; } /* Escondido por padrão */
+
+        .admin-header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 20px;
+            border-bottom: 1px dashed var(--neon-pink);
+            padding-bottom: 10px;
+        }
+        .admin-header img { width: 35px; border-radius: 50%; border: 2px solid var(--neon-green); }
+        .admin-header span { color: var(--neon-green); font-weight: bold; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid var(--neon-blue);
+            border-radius: 8px;
+            background-color: #2b2b40;
+            color: var(--text-light);
+            box-sizing: border-box;
+            font-size: 16px;
+            outline: none;
+        }
+        input::placeholder { color: rgba(255,255,255,0.4); }
+        input:focus { box-shadow: 0 0 8px var(--neon-blue); }
+        
+        .btn-action {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-top: 10px;
+        }
+
+        .btn-postar {
+            background: var(--neon-pink);
+            color: var(--text-dark);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        .btn-postar:hover { background: #ff3399; box-shadow: 0 0 15px var(--neon-pink); }
+        .btn-postar:active { transform: translateY(2px); }
+
+        .btn-logout {
+            background: none;
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+            font-size: 12px;
+            margin-top: 15px;
+            width: auto;
+            align-self: flex-end; /* Alinha o botão de sair à direita */
+            padding: 8px 15px;
+        }
+        .btn-logout:hover { background: rgba(0,255,255,0.1); }
+
+        /* Vitrine de Ofertas */
+        .section-title { 
+            font-weight: 700; 
+            font-size: 1.5rem;
+            margin-bottom: 25px; 
+            color: var(--neon-green);
+            text-shadow: 0 0 5px var(--neon-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+
+        .card-oferta {
+            background: #2b2b40;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 8px rgba(0,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,255,255,0.1);
+        }
+
+        .card-oferta .tag {
+            background: var(--neon-pink);
+            color: var(--text-dark);
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 50px;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            box-shadow: 0 0 5px var(--neon-pink);
+        }
+
+        .card-oferta h3 { margin: 0 0 10px 0; font-size: 1.3rem; padding-right: 70px; color: var(--text-light); }
+        .card-oferta .price { 
+            color: var(--neon-green); 
+            font-size: 1.8rem; 
+            font-weight: 700; 
+            margin-bottom: 15px; 
+            display: block; 
+            text-shadow: 0 0 8px var(--neon-green);
+        }
+
+        .btn-loja {
+            display: block;
+            text-align: center;
+            background: var(--neon-blue);
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .btn-loja:hover { background: #33ffff; box-shadow: 0 0 15px var(--neon-blue); transform: translateY(-2px); }
+
+        /* Login Button */
+        #area-login { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            background: var(--dark-secondary);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,255,255,0.3);
+            border: 1px solid var(--neon-blue);
+        }
+
+        .btn-google { 
+            background: var(--neon-green);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 25px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px;
+            font-weight: 700; 
+            box-shadow: 0 0 15px var(--neon-green);
+            transition: all 0.2s ease-in-out;
+            text-transform: uppercase;
+        }
+        .btn-google:hover { background: #33ff33; box-shadow: 0 0 20px var(--neon-green); }
+        .btn-google img { filter: invert(1); /* Inverte a cor do logo do Google para se adaptar ao fundo escuro */ }
+
+        #lista-achadinhos p { opacity: 0.6; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>💎 Achadinho no Precinho</h1>
+    <header>
+        <h1 class="neon-glow">Achadinho Neon</h1>
+        <p>As ofertas mais iradas do ciberespaço, selecionadas por Wally!</p>
+    </header>
 
+    <div class="container">
         <div id="area-login">
-            <button id="btnLogin" class="btn-login">Entrar para Postar (Admin)</button>
+            <button id="btnLogin" class="btn-google">
+                <i class="fab fa-google" style="color: var(--text-dark);"></i> Acesso de Admin
+            </button>
         </div>
 
-        <div id="painel-postagem" style="display: none;">
-            <div class="user-header">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <img id="userPhoto" src="" alt="Foto">
-                    <span id="userName" style="font-weight: bold;"></span>
-                </div>
-                <button id="btnLogout" class="btn-logout">Sair</button>
+        <section id="painel-admin">
+            <div class="admin-header">
+                <span id="userName">Painel de Postagem</span>
+                <img id="userPhoto" src="">
             </div>
-
             <form id="form-achadinho">
-                <input type="text" id="nomeProduto" placeholder="Nome do Produto" required>
-                <input type="text" id="precoProduto" placeholder="Preço (Ex: R$ 49,90)" required>
-                <input type="url" id="linkProduto" placeholder="Link da Oferta (https://...)" required>
-                <button type="submit" class="btn-salvar">Postar Achadinho</button>
+                <input type="text" id="nomeProduto" placeholder="Nome do Achadinho (Ex: Fone Gamer HyperX)" required>
+                <input type="text" id="precoProduto" placeholder="Preço Top (Ex: R$ 199,99)" required>
+                <input type="url" id="linkProduto" placeholder="Link da Loja (https://...)" required>
+                <button type="submit" class="btn-postar btn-action">Publicar Oferta Cyber</button>
             </form>
-        </div>
-    </div>
+            <button id="btnLogout" class="btn-action btn-logout">Sair do Painel</button>
+        </section>
 
-    <div class="container">
-        <h3>🔥 Ofertas do Dia</h3>
-        <div id="lista-achadinhos">Carregando ofertas...</div>
+        <div class="section-title"><i class="fas fa-fire-alt" style="color:var(--neon-green);"></i> Ofertas Hot 🔥</div>
+        <div id="lista-achadinhos">
+            <p>Carregando ofertas futuristas...</p>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+        // Sua Configuração Real
         const firebaseConfig = {
             apiKey: "AIzaSyCedznZfgv43RRWJmyvA105xFrRhpNTDEw",
             authDomain: "achadinho-no-precinho.firebaseapp.com",
@@ -81,66 +278,63 @@
 
         const EMAIL_ADMIN = "wallyazevedo18@gmail.com";
 
-        // Elementos
-        const painel = document.getElementById('painel-postagem');
-        const areaLogin = document.getElementById('area-login');
         const btnLogin = document.getElementById('btnLogin');
-        const form = document.getElementById('form-achadinho');
-        const lista = document.getElementById('lista-achadinhos');
+        const painelAdmin = document.getElementById('painel-admin');
+        const listaAchadinhos = document.getElementById('lista-achadinhos');
 
+        // Logica de Login
         btnLogin.onclick = () => signInWithPopup(auth, provider);
         document.getElementById('btnLogout').onclick = () => signOut(auth);
 
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                areaLogin.style.display = 'none';
-                if (user.email === EMAIL_ADMIN) {
-                    painel.style.display = 'block';
-                    document.getElementById('userName').innerText = user.displayName;
-                    document.getElementById('userPhoto').src = user.photoURL;
-                } else {
-                    alert("Acesso negado. Apenas Wally pode postar.");
-                    signOut(auth);
-                }
+            if (user && user.email === EMAIL_ADMIN) {
+                painelAdmin.style.display = 'block';
+                document.getElementById('area-login').style.display = 'none';
+                document.getElementById('userPhoto').src = user.photoURL;
+                document.getElementById('userName').innerText = "Admin: " + user.displayName.split(' ')[0];
             } else {
-                areaLogin.style.display = 'block';
-                painel.style.display = 'none';
+                painelAdmin.style.display = 'none';
+                document.getElementById('area-login').style.display = 'block';
+                if (user) signOut(auth); // Desloga se não for admin
             }
         });
 
-        // SALVAR NO BANCO
-        form.onsubmit = async (e) => {
+        // Postar Oferta
+        document.getElementById('form-achadinho').onsubmit = async (e) => {
             e.preventDefault();
-            const novoAchadinho = {
+            const payload = {
                 nome: document.getElementById('nomeProduto').value,
                 preco: document.getElementById('precoProduto').value,
                 link: document.getElementById('linkProduto').value,
-                data: new Date().toLocaleString()
+                timestamp: Date.now()
             };
-
             try {
-                await push(ref(db, 'achadinhos'), novoAchadinho);
-                form.reset();
-                alert("Postado com sucesso!");
-            } catch (error) {
-                alert("Erro de permissão no Firebase.");
+                await push(ref(db, 'achadinhos'), payload);
+                document.getElementById('form-achadinho').reset();
+                alert("Sucesso! Sua oferta já está no ciberespaço.");
+            } catch (err) {
+                alert("Erro ao postar. Verifique as regras do Firebase.");
             }
         };
 
-        // LISTAR NO SITE
-        onValue(ref(db, 'achadinhos'), (snapshot) => {
-            lista.innerHTML = "";
-            snapshot.forEach((childSnapshot) => {
-                const item = childSnapshot.val();
-                lista.innerHTML += `
-                    <div class="item-achadinho">
-                        <strong>${item.nome}</strong>
-                        <span class="preco">${item.preco}</span><br><br>
-                        <a href="${item.link}" target="_blank" style="text-decoration:none; color:white; background:#1a73e8; padding:5px 10px; border-radius:5px; font-size:14px;">Ir para a Loja</a>
+        // Mostrar Ofertas (Tempo Real)
+        const consulta = query(ref(db, 'achadinhos'), limitToLast(50)); // Limita a 50 ofertas para não sobrecarregar
+        onValue(consulta, (snapshot) => {
+            listaAchadinhos.innerHTML = "";
+            const items = [];
+            snapshot.forEach(child => { items.unshift(child.val()); }); // Inverte para os mais novos aparecerem em cima
+            
+            items.forEach(item => {
+                listaAchadinhos.innerHTML += `
+                    <div class="card-oferta">
+                        <span class="tag">OFERTA NEON</span>
+                        <h3>${item.nome}</h3>
+                        <span class="price">${item.preco}</span>
+                        <a href="${item.link}" target="_blank" class="btn-loja">RESGATAR CYBER-OFERTA <i class="fas fa-arrow-right"></i></a>
                     </div>
                 `;
             });
-            if (lista.innerHTML === "") lista.innerHTML = "Aguardando promoções...";
+            if(items.length === 0) listaAchadinhos.innerHTML = "<p style='text-align:center; opacity:0.6;'>Aguardando ofertas futuristas...</p>";
         });
     </script>
 </body>
