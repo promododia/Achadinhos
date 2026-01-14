@@ -93,8 +93,8 @@
 
         function gerenciarLogin() {
             if (!auth.currentUser) {
-                // REDIRECIONAMENTO (Melhor para celular)
-                auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+                const provider = new firebase.auth.GoogleAuthProvider();
+                auth.signInWithRedirect(provider);
             } else {
                 if(confirm("Deseja sair da conta?")) auth.signOut().then(() => location.reload());
             }
@@ -138,7 +138,7 @@
                 div.innerHTML += `<div class="card"><img src="${p.imagem}"><div class="card-body"><span class="card-title">${p.titulo}</span><a href="${p.link}" target="_blank" class="btn-link">Ver Oferta</a></div></div>`;
             });
         }
-        
+
         function filtrarCategoria(cat, elemento) {
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             elemento.classList.add('active');
