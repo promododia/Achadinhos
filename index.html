@@ -93,14 +93,17 @@
         let produtosLocal = [];
         let catAtual = "Tudo";
 
+        // Função de Login do Google
         function gerenciarLogin() {
             if (!auth.currentUser) {
-                auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+                const provider = new firebase.auth.GoogleAuthProvider();
+                auth.signInWithRedirect(provider);
             } else {
                 if(confirm("Deseja sair da conta?")) auth.signOut().then(() => location.reload());
             }
         }
 
+        // Monitor de Autenticação
         auth.onAuthStateChanged(user => {
             const btnAdd = document.getElementById('btn-adicionar');
             const imgUser = document.getElementById('avatar-img');
